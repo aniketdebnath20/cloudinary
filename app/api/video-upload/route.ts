@@ -50,12 +50,18 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        const result = await new Promise<CloudinaryUploadResult>(
+     const result = await new Promise<CloudinaryUploadResult>(
             (resolve, reject) => {
                 const uploadStream = cloudinary.uploader.upload_stream(
-                    { folder: "video_uploads" },
+                    {
+                        resource_type: "video",
+                        folder: "video-uploads",
+                        transformation: [
+                            {quality: "auto", fetch_format: "mp4"},
+                        ]
+                    },
                     (error, result) => {
-                        if (error) reject(error);
+                        if(error) reject(error);
                         else resolve(result as CloudinaryUploadResult);
                     }
                 )
